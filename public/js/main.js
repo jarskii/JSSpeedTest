@@ -1,6 +1,5 @@
 (function(window, document) {
 
-
   const Fabric = {
     create: function(type, params) {
       var element = document.createElement(type);
@@ -40,7 +39,6 @@
   Application.prototype.countTime = function(test) {
     var startTime = new Date().getTime();
 
-    console.log(test.func(i));
     for (var i = 0, max = test.iteration || 1; i<max; i++) {
       test.func(i);
     }
@@ -184,8 +182,8 @@
         if (e.keyCode === 9) {
           e.preventDefault();
           e.stopPropagation();
-
           //console.log(e);
+          //e.target.innerHTML = e.target.innerHTML + '\t';
         }
       })
 

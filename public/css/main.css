@@ -153,6 +153,7 @@ body {
   font-family: monospace;
   font-size: 13px;
   height: 350px;
+  box-shadow: inset 1px 1px 0 0 #EFD29A, inset 2px 2px 0 0 #EFD29A, inset 3px 3px 0 0 #EFD29A;
 }
 
 .ScriptCanvas:hover, .ScriptCanvas:active, .ScriptCanvas:focus {
@@ -166,6 +167,8 @@ body {
   box-sizing: border-box;
   padding: 55px 16px;
   background-color: #F8F1D8;
+
+  box-shadow: 1px 1px 0 0 #E4CB9B, 2px 2px 0 0 #E4CB9B, 3px 3px 0 0 #E4CB9B, 4px 4px 0 0 #E4CB9B, 5px 5px 0 0 #E4CB9B, 6px 6px 0 0 #E4CB9B, 7px 7px 0 0 #D7B97F, 8px 8px 0 0 #C6A25D;
 }
 .ScriptCanvas--Wrap:after {
     left: 10px;
