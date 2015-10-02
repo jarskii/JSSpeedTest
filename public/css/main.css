@@ -48,22 +48,26 @@ body {
 
 .Test {
   position: relative;
-    width: auto;
-    float: left;
-    padding: 16px;
-    background-color: #F8F1D8;
-    box-sizing: border-box;
+  width: auto;
+  float: left;
+  padding: 16px;
+  background-color: #F8F1D8;
+  box-sizing: border-box;
+  margin-left: 16px;
 }
 
-Test::after {
+.Test:after, .ScriptCanvas--Wrap:after  {
   content: '';
   position: absolute;
-  right: 10px;
   top: 10px;
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: #fff;
+}
+
+.Test:after {
+  right: 10px;
 }
 
 .TestTitle {
@@ -122,4 +126,52 @@ Test::after {
 
 .Code--Level-10 {
   padding-left: 225px;
+}
+
+.ScriptCanvas {
+  resize: none;
+  width: 100%;
+  height: 100%;
+      border-radius: 12px 12px 0 0;
+  border: none;
+  padding: 16px;
+  box-sizing: border-box;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.ScriptCanvas:hover, .ScriptCanvas:active, .ScriptCanvas:focus {
+  outline: none;
+}
+
+.ScriptCanvas--Wrap {
+  width: 500px;
+  float: right;
+  margin-right: 16px;
+  box-sizing: border-box;
+  padding: 55px 16px;
+  height: 500px;
+  border-radius: 0px;
+  background-color: #F8F1D8;
+}
+.ScriptCanvas--Wrap:after {
+    left: 10px;
+}
+
+.ScriptCanvasIter, .ScriptCanvasTitle  {
+  padding: 8px;
+  border: 0;
+  font-size: 12px;
+}
+
+.ScriptCanvasIter {
+  margin: 4px 0;
+  border-radius: 0 0 0px 8px;
+  width: 117px;
+}
+
+.ScriptCanvasTitle {
+  margin: 4px 0 0 8px;
+  border-radius: 0 0 8px 0px;
+  width: 311px;
 }

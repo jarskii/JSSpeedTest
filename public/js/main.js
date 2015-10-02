@@ -5,6 +5,15 @@
     makeElement: function(type) {
         return document.createElement(type)
     },
+    create: function(type, params) {
+      var element = document.createElement(type);
+
+      for (var key in params) {
+        element[key] = params[key]
+      }
+
+      return element;
+    },
     div: function(params) {
       var div = this.makeElement('div');
 
@@ -31,14 +40,14 @@
   };
 
   Application.prototype.recordValue = function(result) {
-    var info = Fabric.div({
+    var info = Fabric.create('div', {
         className: 'TestInfo'
     });
-    var time = Fabric.div({
+    var time = Fabric.create('div', {
       className: 'TestInfoTime',
       innerHTML: `Time: ${result.time}ms`
     });
-    var iteration = Fabric.div({
+    var iteration = Fabric.create('div', {
       className: 'TestInfoIteration',
       innerHTML: `Iteration: ${result.iteration}`
     });
@@ -46,7 +55,6 @@
     info.appendChild(time);
     info.appendChild(iteration);
 
-console.log(result.id)
     document.getElementById(result.id).appendChild(info);
   }
 
@@ -67,16 +75,16 @@ console.log(result.id)
 
   Application.prototype.createContainer = function(test) {
 
-    const container = Fabric.div({
+    const container = Fabric.create('div', {
       id: test.id,
       className: 'Test'
     });
-    const title = Fabric.div({
+    const title = Fabric.create('div', {
       className: 'TestTitle',
       innerHTML: test.title
     });
 
-    const scriptText = Fabric.div({
+    const scriptText = Fabric.create('div', {
       className: 'TestScript'
     });
 
@@ -98,7 +106,7 @@ console.log(result.id)
     var level = 1;
 
     for (var i = 0, max = parts.length; i < max; i++) {
-      fragment.appendChild(Fabric.div({
+      fragment.appendChild(Fabric.create('div', {
         className: `Code Code--Level-${level}`,
         innerHTML: `${parts[i]}${bracket[i]}`
       }))
@@ -118,6 +126,33 @@ console.log(result.id)
     return fragment;
   }
 
+  Application.prototype.createCanvas = function() {
+      var canvasWrap = Fabric.create('div', {
+        className: 'ScriptCanvas--Wrap'
+      });
+      var canvas = Fabric.create('textarea', {
+        id: 'canvas',
+        className: 'ScriptCanvas'
+      });
+      var iterCounter = Fabric.create('input', {
+        type: 'text',
+        id: 'canvas_iteration',
+        className: 'ScriptCanvasIter',
+        placeholder: 'Add iteration count'
+      });
+      var title = Fabric.create('input', {
+        type: 'text',
+        id: 'canvas_title',
+        className: 'ScriptCanvasTitle',
+        placeholder: 'Add test title'
+      });
+
+      canvasWrap.appendChild(canvas);
+      canvasWrap.appendChild(iterCounter);
+      canvasWrap.appendChild(title);
+      this.el.insertBefore(canvasWrap, this.el.children[0]);
+  };
+
   Application.prototype.createTest = function(test) {
     this.tests.push(test);
 
@@ -132,6 +167,7 @@ console.log(result.id)
 
   const app = new Application('app');
 
+  app.createCanvas();
   app.createTest({
     title: 'Test on defineProperty',
     iteration: 100000,
