@@ -35,9 +35,9 @@ body {
   width: 100%;
   height: auto;
   position: relative;
-  padding: 71px 0 52px 0;
   box-sizing: border-box;
-  margin-bottom: 38px;
+  margin: 0 0 38px;
+  padding: 16px 0;
 }
 
 .Content::after {
@@ -47,13 +47,14 @@ body {
 }
 
 .Test {
-  position: relative;
-  width: auto;
-  float: left;
-  padding: 16px;
-  background-color: #F8F1D8;
-  box-sizing: border-box;
-  margin-left: 16px;
+    position: relative;
+    width: auto;
+    float: left;
+    padding: 16px;
+    background-color: #F8F1D8;
+    box-sizing: border-box;
+    margin: 0 0 16px 16px;
+    font-size: 11px;
 }
 
 .Test:after, .ScriptCanvas--Wrap:after  {
@@ -68,6 +69,16 @@ body {
 
 .Test:after {
   right: 10px;
+}
+
+.TestRemove {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  width: 20px;
+  height: 30px;
+  background: #825BC2;
+  border-radius: 3px 3px 0 0;
 }
 
 .TestTitle {
@@ -90,6 +101,10 @@ body {
 
 .Code {
     margin-bottom: 8px;
+    max-width: 333px;
+    word-break: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .Code--Level-2 {
@@ -131,13 +146,13 @@ body {
 .ScriptCanvas {
   resize: none;
   width: 100%;
-  height: 100%;
-      border-radius: 12px 12px 0 0;
+  border-radius: 12px 12px 0 0;
   border: none;
   padding: 16px;
   box-sizing: border-box;
   font-family: monospace;
   font-size: 13px;
+  height: 350px;
 }
 
 .ScriptCanvas:hover, .ScriptCanvas:active, .ScriptCanvas:focus {
@@ -146,12 +161,10 @@ body {
 
 .ScriptCanvas--Wrap {
   width: 500px;
-  float: right;
-  margin-right: 16px;
+  float: left;
+  margin: 0 16px;
   box-sizing: border-box;
   padding: 55px 16px;
-  height: 500px;
-  border-radius: 0px;
   background-color: #F8F1D8;
 }
 .ScriptCanvas--Wrap:after {
@@ -174,4 +187,26 @@ body {
   margin: 4px 0 0 8px;
   border-radius: 0 0 8px 0px;
   width: 311px;
+}
+
+.ScriptCanvasButton {
+    position: relative;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #F2B992;
+    margin: 16px auto -32px;
+    box-shadow: 1px 0px 0 0 #A96F47, 2px 1px 0 0 #A96F37;
+    cursor: pointer;
+}
+
+.ScriptCanvasError {
+    position: absolute;
+    color: #A94A47;
+    width: 230px;
+    left: 50%;
+    margin-left: -115px;
+    text-align: center;
+    top: 64px;
+    font-size: 10px;
 }
