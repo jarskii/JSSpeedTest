@@ -1,0 +1,125 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: monospace;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.Header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 56px;
+  max-height: 56px;
+  font-size: 20px;
+  color: #fff;
+  background: #76C9D5;
+}
+
+.Footer {
+  height: 36px;
+  background: #76D5B7;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  color: #fff;
+}
+
+.Content {
+  width: 100%;
+  height: auto;
+  position: relative;
+  padding: 71px 0 52px 0;
+  box-sizing: border-box;
+  margin-bottom: 38px;
+}
+
+.Content::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.Test {
+  position: relative;
+    width: auto;
+    float: left;
+    padding: 16px;
+    background-color: #F8F1D8;
+    box-sizing: border-box;
+}
+
+Test::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.TestTitle {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.TestScript {
+  color: #3A277C;
+  padding: 16px;
+  background-color: #FEFBF6;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.TestInfo {
+  margin-top: 24px;
+  text-align: right;
+}
+
+.Code {
+    margin-bottom: 8px;
+}
+
+.Code--Level-2 {
+    padding-left: 25px;
+}
+
+.Code--Level-3 {
+  padding-left: 50px;
+}
+
+.Code--Level-4 {
+  padding-left: 75px;
+}
+
+.Code--Level-5 {
+  padding-left: 100px;
+}
+
+.Code--Level-6 {
+  padding-left: 125px;
+}
+
+.Code--Level-7 {
+  padding-left: 150px;
+}
+
+.Code--Level-8 {
+  padding-left: 175px;
+}
+
+.Code--Level-9 {
+  padding-left: 200px;
+}
+
+.Code--Level-10 {
+  padding-left: 225px;
+}
