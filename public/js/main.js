@@ -1,10 +1,10 @@
 (function(window, document) {
 
   const Fabric = {
-    create: function(type, params) {
+    create: (type, params) => {
       var element = document.createElement(type);
 
-      for (var key in params) {
+      for (let key in params) {
         element[key] = params[key]
       }
 
@@ -18,14 +18,14 @@
   };
 
   Application.prototype.recordValue = function(result) {
-    var info = Fabric.create('div', {
+    const info = Fabric.create('div', {
         className: 'TestInfo'
     });
-    var time = Fabric.create('div', {
+    const time = Fabric.create('div', {
       className: 'TestInfoTime',
       innerHTML: `Time: ${result.time}ms`
     });
-    var iteration = Fabric.create('div', {
+    const iteration = Fabric.create('div', {
       className: 'TestInfoIteration',
       innerHTML: `Iteration: ${result.iteration}`
     });
@@ -37,16 +37,17 @@
   }
 
   Application.prototype.countTime = function(test) {
-    var startTime = new Date().getTime();
 
-    for (var i = 0, max = test.iteration || 1; i<max; i++) {
+    const startTime = new Date().getTime();
+
+    for (let i = 0, max = test.iteration || 1; i < max; i++) {
       test.func(i);
     }
 
-    var endTime = new Date().getTime();
+    const endTime = new Date().getTime();
 
-    var delay = endTime - startTime;
-    var params = {
+    const delay = endTime - startTime;
+    const params = {
       time: delay,
       iteration: test.iteration,
       id: test.id
@@ -59,21 +60,21 @@
 
   Application.prototype.createContainer = function(test) {
 
-    var container = Fabric.create('div', {
+    const container = Fabric.create('div', {
       id: test.id,
       className: 'Test'
     });
 
-    var title = Fabric.create('div', {
+    const title = Fabric.create('div', {
       className: 'TestTitle',
       innerHTML: test.title || 'Test'
     });
 
-    var scriptText = Fabric.create('div', {
+    const scriptText = Fabric.create('div', {
       className: 'TestScript'
     });
 
-    var removeBtn = Fabric.create('div', {
+    const removeBtn = Fabric.create('div', {
       className: 'TestRemove'
     });
 
@@ -119,7 +120,7 @@
     var parts = functionInString.split(pattern);
     var level = 1;
 
-    for (var i = 0, max = (parts.length < 2 ? parts.length : parts.length-1); i < max; i++) {
+    for (let i = 0, max = (parts.length < 2 ? parts.length : parts.length-1); i < max; i++) {
       fragment.appendChild(Fabric.create('div', {
         className: `Code Code--Level-${level}`,
         innerHTML: `${parts[i]}${bracket ? bracket[i] : ''}`
