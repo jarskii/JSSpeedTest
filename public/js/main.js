@@ -1,36 +1,14 @@
 (function(window, document) {
 
-
   const Fabric = {
-    makeElement: function(type) {
-        return document.createElement(type)
-    },
-    create: function(type, params) {
+    create: (type, params) => {
       var element = document.createElement(type);
 
-      for (var key in params) {
+      for (let key in params) {
         element[key] = params[key]
       }
 
       return element;
-    },
-    div: function(params) {
-      var div = this.makeElement('div');
-
-      for (var key in params) {
-        div[key] = params[key]
-      }
-
-      return div
-    },
-    code: function(params) {
-      var code = this.makeElement('code');
-
-      for (var key in params) {
-        code[key] = params[key]
-      }
-
-      return code
     }
   }
 
@@ -40,14 +18,14 @@
   };
 
   Application.prototype.recordValue = function(result) {
-    var info = Fabric.create('div', {
+    const info = Fabric.create('div', {
         className: 'TestInfo'
     });
-    var time = Fabric.create('div', {
+    const time = Fabric.create('div', {
       className: 'TestInfoTime',
       innerHTML: `Time: ${result.time}ms`
     });
-    var iteration = Fabric.create('div', {
+    const iteration = Fabric.create('div', {
       className: 'TestInfoIteration',
       innerHTML: `Iteration: ${result.iteration}`
     });
@@ -59,18 +37,25 @@
   }
 
   Application.prototype.countTime = function(test) {
+
     const startTime = new Date().getTime();
 
-    for (var i = 0, max = test.iteration || 1; i<max; i++) {
+    for (let i = 0, max = test.iteration || 1; i < max; i++) {
       test.func(i);
     }
 
     const endTime = new Date().getTime();
-    this.recordValue({
-      time: endTime - startTime,
+
+    const delay = endTime - startTime;
+    const params = {
+      time: delay,
       iteration: test.iteration,
       id: test.id
-    });
+    };
+
+    this.recordValue(params);
+
+    return params;
   };
 
   Application.prototype.createContainer = function(test) {
@@ -79,19 +64,49 @@
       id: test.id,
       className: 'Test'
     });
+
     const title = Fabric.create('div', {
       className: 'TestTitle',
-      innerHTML: test.title
+      innerHTML: test.title || 'Test'
     });
 
     const scriptText = Fabric.create('div', {
       className: 'TestScript'
     });
 
-    scriptText.appendChild(this.makeCode(test.func));
+    const removeBtn = Fabric.create('div', {
+      className: 'TestRemove'
+    });
 
-    container.appendChild(title)
-    container.appendChild(scriptText)
+    removeBtn.setAttribute('data-victim', test.id);
+
+    scriptText.appendChild(this.makeCode(test.func || test.funcString));
+
+    removeBtn.addEventListener('click', function() {
+      if (confirm('Are you sure ?')) {
+        var stash = JSON.parse(localStorage.getItem('jsTestFunction'));
+        var victim = this.getAttribute('data-victim');
+        var index = 0;
+
+        for (var i = 0, max = stash.length; i<max; i++) {
+          (function(i, obj) {
+            if (obj.id === victim) {
+              index = i;
+            }
+          })(i, stash[i])
+        };
+
+        stash.splice(index, 1);
+        localStorage.setItem('jsTestFunction', JSON.stringify(stash));
+
+        document.getElementById(victim).remove();
+
+      }
+    })
+
+    container.appendChild(title);
+    container.appendChild(scriptText);
+    container.appendChild(removeBtn)
 
     this.el.appendChild(container);
   }
@@ -105,21 +120,23 @@
     var parts = functionInString.split(pattern);
     var level = 1;
 
-    for (var i = 0, max = parts.length; i < max; i++) {
+    for (let i = 0, max = (parts.length < 2 ? parts.length : parts.length-1); i < max; i++) {
       fragment.appendChild(Fabric.create('div', {
         className: `Code Code--Level-${level}`,
-        innerHTML: `${parts[i]}${bracket[i]}`
+        innerHTML: `${parts[i]}${bracket ? bracket[i] : ''}`
       }))
 
-      switch (bracket[i]) {
-        case '{':
-          level++;
-          break;
-        case '}':
-          level--;
-          break
-        default:
-          break;
+      if (bracket) {
+        switch (bracket[i]) {
+          case '{':
+            level++;
+            break;
+          case '}':
+            level--;
+            break
+          default:
+            break;
+        }
       }
     }
 
@@ -130,16 +147,19 @@
       var canvasWrap = Fabric.create('div', {
         className: 'ScriptCanvas--Wrap'
       });
+
       var canvas = Fabric.create('textarea', {
         id: 'canvas',
         className: 'ScriptCanvas'
       });
+
       var iterCounter = Fabric.create('input', {
         type: 'text',
         id: 'canvas_iteration',
         className: 'ScriptCanvasIter',
         placeholder: 'Add iteration count'
       });
+
       var title = Fabric.create('input', {
         type: 'text',
         id: 'canvas_title',
@@ -147,10 +167,65 @@
         placeholder: 'Add test title'
       });
 
+      var button = Fabric.create('div', {
+          id: 'canvas_btn',
+          className: 'ScriptCanvasButton'
+      });
+
+      var errorContainer = Fabric.create('div', {
+        id: 'canvas_error',
+        className: 'ScriptCanvasError'
+      });
+
+      button.appendChild(errorContainer);
+
+      canvas.addEventListener('keydown', function(e) {
+        if (e.keyCode === 9) {
+          e.preventDefault();
+          e.stopPropagation();
+          //console.log(e);
+          //e.target.innerHTML = e.target.innerHTML + '\t';
+        }
+      })
+
+      button.addEventListener('click', function() {
+          if (canvas.value.length === 0) {
+            this.triggerError("Need add code");
+            return false;
+          } else if(title.value.length === 0) {
+            this.triggerError("Need add title");
+            return false;
+          }
+          try {
+              this.createTest({
+                  title: title.value,
+                  iteration: iterCounter.value,
+                  funcString: canvas.value,
+                  func: new Function(
+                      `return function test(){${canvas.value}}`
+                  )()
+              });
+          } catch(err) {
+              this.triggerError("I can't parse function ")
+          }
+      }.bind(this));
+
       canvasWrap.appendChild(canvas);
       canvasWrap.appendChild(iterCounter);
       canvasWrap.appendChild(title);
+      canvasWrap.appendChild(button);
+
       this.el.insertBefore(canvasWrap, this.el.children[0]);
+  };
+
+  Application.prototype.triggerError = function(msg) {
+    var errorContainer = document.getElementById('canvas_error');
+
+    errorContainer.innerHTML = msg;
+
+    setTimeout(function() {
+      errorContainer.innerHTML = null
+    }, 2000)
   };
 
   Application.prototype.createTest = function(test) {
@@ -162,50 +237,35 @@
     });
 
     this.createContainer(test);
-    this.countTime(test);
+
+    var result = this.countTime(test);
+
+    result.funcString = test.funcString;
+
+    var stashedTests = JSON.parse(localStorage.getItem('jsTestFunction')) || [];
+
+    stashedTests.push(result);
+
+    localStorage.setItem('jsTestFunction', JSON.stringify(stashedTests));
   };
 
   const app = new Application('app');
 
   app.createCanvas();
-  app.createTest({
-    title: 'Test on defineProperty',
-    iteration: 100000,
-    func: function(i) {
 
-        var arr = [];
 
-        var getRandomInt = function(min, max) {
-          return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
+  var stashedTests = localStorage.getItem('jsTestFunction');
 
-        var distinct = function(arr) {
-            var tempArr = [];
+  // If have stash in localStorage, paint tests cards
 
-            for (var i = 0, max=arr.length; i < max; i++) {
-              if (!tempArr.length) {
-                tempArr.push(arr[i])
-              } else {
-                for (var k = 0, max = tempArr.length; k < max; k++) {
-                  if (arr[i] === tempArr[k]) {
-                      continue;
-                  }
+  if (stashedTests) {
+    var arrOfTests = JSON.parse(stashedTests);
 
-                  tempArr.push(arr[i])
-
-                }
-              }
-            }
-
-            return tempArr;
-        };
-
-        for (var i=0; i<20; i++) {
-          arr.push(getRandomInt(1,5))
-        };
-
-        distinct(arr);
+    for (var i = 0, max = arrOfTests.length; i < max; i++) {
+      app.tests.push(arrOfTests[i]);
+      app.createContainer(arrOfTests[i]);
+      app.recordValue(arrOfTests[i]);
     }
-  });
-
+  }
 })(window, document)
+

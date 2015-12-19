@@ -5,7 +5,7 @@ const app = new express();
 
 app.set('port', 7777);
 
-app.use('/js', express.static(path.join(__dirname, 'public/js')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static(path.join(__dirname, 'public/css')));
 
 app.listen(app.get('port'), function() {
@@ -29,7 +29,7 @@ app.get('/', function(req, res) {
           <footer class="Footer">
             (С) Zharsky Dmitriy
           </footer>
-          <script type="text/javascript" src="/js/main.js"></script>
+          <script type="text/javascript" src="/public/bundle.js?${Math.random()}"></script>
         </body>
       </html>
     `)
