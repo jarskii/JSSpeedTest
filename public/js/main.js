@@ -1,271 +1,43 @@
-(function(window, document) {
+import map from '../maps/map';
 
-  const Fabric = {
-    create: (type, params) => {
-      var element = document.createElement(type);
+const TILE_SIZE = 24;
 
-      for (let key in params) {
-        element[key] = params[key]
-      }
-
-      return element;
-    }
+Class MapRenderer {
+  contructor({ctx, map}) {
+    this.context = ctx;
+    this.map = map;
+    this.tileSize = TILE_SIZE;
   }
+  draw() {
+    const {context, map, drawTile, w, h} = this;
 
-  const Application = function(id) {
-    this.el = document.getElementById(id);
-    this.tests = [];
-  };
-
-  Application.prototype.recordValue = function(result) {
-    const info = Fabric.create('div', {
-        className: 'TestInfo'
-    });
-    const time = Fabric.create('div', {
-      className: 'TestInfoTime',
-      innerHTML: `Time: ${result.time}ms`
-    });
-    const iteration = Fabric.create('div', {
-      className: 'TestInfoIteration',
-      innerHTML: `Iteration: ${result.iteration}`
-    });
-
-    info.appendChild(time);
-    info.appendChild(iteration);
-
-    document.getElementById(result.id).appendChild(info);
-  }
-
-  Application.prototype.countTime = function(test) {
-
-    const startTime = new Date().getTime();
-
-    for (let i = 0, max = test.iteration || 1; i < max; i++) {
-      test.func(i);
-    }
-
-    const endTime = new Date().getTime();
-
-    const delay = endTime - startTime;
-    const params = {
-      time: delay,
-      iteration: test.iteration,
-      id: test.id
-    };
-
-    this.recordValue(params);
-
-    return params;
-  };
-
-  Application.prototype.createContainer = function(test) {
-
-    const container = Fabric.create('div', {
-      id: test.id,
-      className: 'Test'
-    });
-
-    const title = Fabric.create('div', {
-      className: 'TestTitle',
-      innerHTML: test.title || 'Test'
-    });
-
-    const scriptText = Fabric.create('div', {
-      className: 'TestScript'
-    });
-
-    const removeBtn = Fabric.create('div', {
-      className: 'TestRemove'
-    });
-
-    removeBtn.setAttribute('data-victim', test.id);
-
-    scriptText.appendChild(this.makeCode(test.func || test.funcString));
-
-    removeBtn.addEventListener('click', function() {
-      if (confirm('Are you sure ?')) {
-        var stash = JSON.parse(localStorage.getItem('jsTestFunction'));
-        var victim = this.getAttribute('data-victim');
-        var index = 0;
-
-        for (var i = 0, max = stash.length; i<max; i++) {
-          (function(i, obj) {
-            if (obj.id === victim) {
-              index = i;
-            }
-          })(i, stash[i])
-        };
-
-        stash.splice(index, 1);
-        localStorage.setItem('jsTestFunction', JSON.stringify(stash));
-
-        document.getElementById(victim).remove();
-
-      }
-    })
-
-    container.appendChild(title);
-    container.appendChild(scriptText);
-    container.appendChild(removeBtn)
-
-    this.el.appendChild(container);
-  }
-
-  Application.prototype.makeCode = function(func) {
-    var functionInString = [] + func;
-    var fragment = document.createDocumentFragment();
-
-    var pattern = /[{;}]/g;
-    var bracket = functionInString.match(pattern)
-    var parts = functionInString.split(pattern);
-    var level = 1;
-
-    for (let i = 0, max = (parts.length < 2 ? parts.length : parts.length-1); i < max; i++) {
-      fragment.appendChild(Fabric.create('div', {
-        className: `Code Code--Level-${level}`,
-        innerHTML: `${parts[i]}${bracket ? bracket[i] : ''}`
-      }))
-
-      if (bracket) {
-        switch (bracket[i]) {
-          case '{':
-            level++;
-            break;
-          case '}':
-            level--;
-            break
-          default:
-            break;
+    context.clearRect(0, 0, w, h);
+    context.fillStyle = "rgba(255,0,0,0.6)";
+    map.forEach((row, i) => {
+      row.forEach((tile, j) => {
+        if (tile !== 0) { //if tile is not walkable
+          drawTile(j, i); //draw a rectangle at j,i
         }
-      }
-    }
-
-    return fragment;
-  }
-
-  Application.prototype.createCanvas = function() {
-      var canvasWrap = Fabric.create('div', {
-        className: 'ScriptCanvas--Wrap'
       });
-
-      var canvas = Fabric.create('textarea', {
-        id: 'canvas',
-        className: 'ScriptCanvas'
-      });
-
-      var iterCounter = Fabric.create('input', {
-        type: 'text',
-        id: 'canvas_iteration',
-        className: 'ScriptCanvasIter',
-        placeholder: 'Add iteration count'
-      });
-
-      var title = Fabric.create('input', {
-        type: 'text',
-        id: 'canvas_title',
-        className: 'ScriptCanvasTitle',
-        placeholder: 'Add test title'
-      });
-
-      var button = Fabric.create('div', {
-          id: 'canvas_btn',
-          className: 'ScriptCanvasButton'
-      });
-
-      var errorContainer = Fabric.create('div', {
-        id: 'canvas_error',
-        className: 'ScriptCanvasError'
-      });
-
-      button.appendChild(errorContainer);
-
-      canvas.addEventListener('keydown', function(e) {
-        if (e.keyCode === 9) {
-          e.preventDefault();
-          e.stopPropagation();
-          //console.log(e);
-          //e.target.innerHTML = e.target.innerHTML + '\t';
-        }
-      })
-
-      button.addEventListener('click', function() {
-          if (canvas.value.length === 0) {
-            this.triggerError("Need add code");
-            return false;
-          } else if(title.value.length === 0) {
-            this.triggerError("Need add title");
-            return false;
-          }
-          try {
-              this.createTest({
-                  title: title.value,
-                  iteration: iterCounter.value,
-                  funcString: canvas.value,
-                  func: new Function(
-                      `return function test(){${canvas.value}}`
-                  )()
-              });
-          } catch(err) {
-              this.triggerError("I can't parse function ")
-          }
-      }.bind(this));
-
-      canvasWrap.appendChild(canvas);
-      canvasWrap.appendChild(iterCounter);
-      canvasWrap.appendChild(title);
-      canvasWrap.appendChild(button);
-
-      this.el.insertBefore(canvasWrap, this.el.children[0]);
-  };
-
-  Application.prototype.triggerError = function(msg) {
-    var errorContainer = document.getElementById('canvas_error');
-
-    errorContainer.innerHTML = msg;
-
-    setTimeout(function() {
-      errorContainer.innerHTML = null
-    }, 2000)
-  };
-
-  Application.prototype.createTest = function(test) {
-    this.tests.push(test);
-
-    Object.defineProperty(test, 'id', {
-      writable: false,
-      value: `app_${this.tests.length}`
     });
-
-    this.createContainer(test);
-
-    var result = this.countTime(test);
-
-    result.funcString = test.funcString;
-
-    var stashedTests = JSON.parse(localStorage.getItem('jsTestFunction')) || [];
-
-    stashedTests.push(result);
-
-    localStorage.setItem('jsTestFunction', JSON.stringify(stashedTests));
-  };
-
-  const app = new Application('app');
-
-  app.createCanvas();
-
-
-  var stashedTests = localStorage.getItem('jsTestFunction');
-
-  // If have stash in localStorage, paint tests cards
-
-  if (stashedTests) {
-    var arrOfTests = JSON.parse(stashedTests);
-
-    for (var i = 0, max = arrOfTests.length; i < max; i++) {
-      app.tests.push(arrOfTests[i]);
-      app.createContainer(arrOfTests[i]);
-      app.recordValue(arrOfTests[i]);
-    }
   }
+
+  drawTile(sprite, singleTileSpec, x, y) {
+    const {context, tileSize} = this
+
+    context.drawImage(
+      sprite,
+      singleTileSpec.x, singleTileSpec.y, tileSize, tileSize, // source coords
+      Math.floor(x * tileSize), Math.floor(y * tileSize), tileSize, tileSize // destination coords
+    );
+  }
+}
+
+((window, document) {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const mapRenderer = new MapRenderer({ctx, map})
+
+  mapRenderer.draw();
 })(window, document)
-

@@ -5,8 +5,12 @@ const app = new express();
 
 app.set('port', 7777);
 
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/js', express.static(path.join(__dirname, 'public/js')));
+app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.use('/css', express.static(path.join(__dirname, 'public/css')));
+app.use('/img', express.static(path.join(__dirname, 'public/img')));
+
+console.log(123);
 
 app.listen(app.get('port'), function() {
   console.log(`TEST JS START on port: ${app.get('port')}`);
@@ -24,12 +28,12 @@ app.get('/', function(req, res) {
         <body>
           <header class="Header">Test js code</header>
           <section class="Content" id="app">
-
+            <canvas width="800" height="600" class="Canvas" id="canvas">
           </section>
           <footer class="Footer">
             (С) Zharsky Dmitriy
           </footer>
-          <script type="text/javascript" src="/public/bundle.js?${Math.random()}"></script>
+          <script type="text/javascript" src="/assets/bundle.js"></script>
         </body>
       </html>
     `)

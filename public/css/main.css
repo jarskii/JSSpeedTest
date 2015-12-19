@@ -31,14 +31,13 @@ body {
   color: #fff;
 }
 
-
 .Content {
   width: 100%;
   height: auto;
   position: relative;
+  padding: 71px 0 52px 0;
   box-sizing: border-box;
-  margin: 0 0 38px;
-  padding: 16px 0;
+  margin-bottom: 38px;
 }
 
 .Content::after {
@@ -48,14 +47,13 @@ body {
 }
 
 .Test {
-    position: relative;
-    width: auto;
-    float: left;
-    padding: 16px;
-    background-color: #F8F1D8;
-    box-sizing: border-box;
-    margin: 0 0 16px 16px;
-    font-size: 11px;
+  position: relative;
+  width: auto;
+  float: left;
+  padding: 16px;
+  background-color: #F8F1D8;
+  box-sizing: border-box;
+  margin-left: 16px;
 }
 
 .Test:after, .ScriptCanvas--Wrap:after  {
@@ -70,16 +68,6 @@ body {
 
 .Test:after {
   right: 10px;
-}
-
-.TestRemove {
-  position: absolute;
-  top: -10px;
-  left: 10px;
-  width: 20px;
-  height: 30px;
-  background: #825BC2;
-  border-radius: 3px 3px 0 0;
 }
 
 .TestTitle {
@@ -100,12 +88,12 @@ body {
   text-align: right;
 }
 
+.Canvas {
+  background: url('/img/grass.jpg');
+}
+
 .Code {
     margin-bottom: 8px;
-    max-width: 333px;
-    word-break: break-word;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .Code--Level-2 {
@@ -147,14 +135,13 @@ body {
 .ScriptCanvas {
   resize: none;
   width: 100%;
-  border-radius: 12px 12px 0 0;
+  height: 100%;
+      border-radius: 12px 12px 0 0;
   border: none;
   padding: 16px;
   box-sizing: border-box;
   font-family: monospace;
   font-size: 13px;
-  height: 350px;
-  box-shadow: inset 1px 1px 0 0 #EFD29A, inset 2px 2px 0 0 #EFD29A, inset 3px 3px 0 0 #EFD29A;
 }
 
 .ScriptCanvas:hover, .ScriptCanvas:active, .ScriptCanvas:focus {
@@ -163,13 +150,13 @@ body {
 
 .ScriptCanvas--Wrap {
   width: 500px;
-  float: left;
-  margin: 0 16px;
+  float: right;
+  margin-right: 16px;
   box-sizing: border-box;
   padding: 55px 16px;
+  height: 500px;
+  border-radius: 0px;
   background-color: #F8F1D8;
-
-  box-shadow: 1px 1px 0 0 #E4CB9B, 2px 2px 0 0 #E4CB9B, 3px 3px 0 0 #E4CB9B, 4px 4px 0 0 #E4CB9B, 5px 5px 0 0 #E4CB9B, 6px 6px 0 0 #E4CB9B, 7px 7px 0 0 #D7B97F, 8px 8px 0 0 #C6A25D;
 }
 .ScriptCanvas--Wrap:after {
     left: 10px;
@@ -191,26 +178,4 @@ body {
   margin: 4px 0 0 8px;
   border-radius: 0 0 8px 0px;
   width: 311px;
-}
-
-.ScriptCanvasButton {
-    position: relative;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: #F2B992;
-    margin: 16px auto -32px;
-    box-shadow: 1px 0px 0 0 #A96F47, 2px 1px 0 0 #A96F37;
-    cursor: pointer;
-}
-
-.ScriptCanvasError {
-    position: absolute;
-    color: #A94A47;
-    width: 230px;
-    left: 50%;
-    margin-left: -115px;
-    text-align: center;
-    top: 64px;
-    font-size: 10px;
 }
